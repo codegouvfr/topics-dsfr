@@ -1,5 +1,5 @@
 [![img](https://img.shields.io/badge/code.gouv.fr-contributif-blue.svg)](https://code.gouv.fr/documentation/#quels-degres-douverture-pour-les-codes-sources)
-[![Software License](https://img.shields.io/badge/Licence-EPL.svg)](https://githut.com/codegouvfr/faq-dsfr/tree/main/item/LICENSES/LICENSE.EPL-2.0.txt)
+[![Software License](https://img.shields.io/badge/Licence-EPL-green.svg)](https://githut.com/codegouvfr/faq-dsfr/tree/main/item/LICENSES/LICENSE.EPL-2.0.txt)
 
 # Install
 
@@ -11,7 +11,18 @@ Then run:
 
     faq-dsfr
 	
-You can then check http://localhost:8080
+You can then check the application on http://localhost:8080
+
+# FAQ as json
+
+    Here is an example json with "title", "content" and "path", which
+    last item is used to infer the category:
+
+    [ {
+      "title" : "FAQ title",
+      "content" : "<p>Content as HTML",
+      "path" : [ "Section", "Subsection (as category)" ]
+    } ]
 
 # Example
 
