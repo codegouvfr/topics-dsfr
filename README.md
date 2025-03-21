@@ -5,7 +5,7 @@
 
 Assuming [bbin](https://github.com/babashka/bbin) is installed:
 
-    bbin install https://raw.githubusercontent.com/codegouvfr/subscribe/refs/heads/main/faq-dsfr.clj
+    bbin install https://raw.githubusercontent.com/codegouvfr/faq-dsfr/refs/heads/main/faq-dsfr.clj
 
 Then run:
 
