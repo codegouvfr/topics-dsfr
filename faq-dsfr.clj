@@ -28,9 +28,9 @@
                :default 8080
                :alias   :p
                :coerce  :int}
-   :faq       {:desc    "Path to FAQ JSON file"
+   :faq       {:desc    "Path to FAQ JSON file or URL"
                :alias   :f
-               :default "faq.json"}
+               :default "example.json"}
    :source    {:desc    "Path to the FAQ source"
                :alias   :s
                :default "https://github.com/codegouvfr/documentation/blob/main/index.org#foire-aux-questions"}
