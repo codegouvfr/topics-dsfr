@@ -17,7 +17,7 @@
 ;;   "path" : [ "Section", "Subsection (as category)" ]
 ;; } ]
 
-(ns cdg.faq-dsfr
+(ns codegouvfr.faq-dsfr
   (:require [org.httpkit.server :as server]
             [cheshire.core :as json]
             [clojure.string :as str]
