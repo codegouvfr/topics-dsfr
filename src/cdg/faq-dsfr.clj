@@ -475,7 +475,7 @@
   (System/exit 0))
 
 ;; Main function
-(defn -main []
+(defn -main [& args]
   (try
     ;; Parse command line arguments with babashka.cli
     (let [opts            (cli/parse-opts *command-line-args* {:spec cli-options})
