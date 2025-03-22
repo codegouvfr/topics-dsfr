@@ -17,10 +17,11 @@
 ;;   "path" : [ "Section", "Subsection (as category)" ]
 ;; } ]
 
-(require '[org.httpkit.server :as server]
-         '[cheshire.core :as json]
-         '[clojure.string :as str]
-         '[babashka.cli :as cli])
+(ns cdg.faq-dsfr
+  (:require [org.httpkit.server :as server]
+            [cheshire.core :as json]
+            [clojure.string :as str]
+            [babashka.cli :as cli]))
 
 ;; Define CLI specs
 (def cli-options
@@ -479,14 +480,11 @@
     ;; Parse command line arguments with babashka.cli
     (let [opts            (cli/parse-opts *command-line-args* {:spec cli-options})
           parsed-settings (merge settings opts)]
-
       ;; Show help if requested
       (when (:help parsed-settings)
         (show-help))
-
       ;; Update settings
       (alter-var-root #'settings (constantly parsed-settings))
-
       ;; Load FAQ data
       (let [faq-data (load-faq-data (:faq parsed-settings))]
         ;; Start the server
@@ -502,8 +500,7 @@
         @(promise)))
     (catch Exception e
       (println "ERROR:" (.getMessage e))
-      (.printStackTrace e)
-      (System/exit 1))))
+      (.printStackTrace e))))
 
-;; Start the server
-(-main)
+(when (= *file* (System/getProperty "babashka.file"))
+  (apply -main *command-line-args*))
