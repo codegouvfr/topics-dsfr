@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="{{lang}}" data-fr-theme>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{{page-title}} - {{title}}</title>
+    
+    <!-- DSFR -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.11.1/dist/dsfr/dsfr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.11.1/dist/utility/utility.min.css">
+    <link rel="apple-touch-icon" href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.11.1/dist/favicon/apple-touch-icon.png">
+    <link rel="icon" href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.11.1/dist/favicon/favicon.svg" type="image/svg+xml">
+    <link rel="shortcut icon" href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.11.1/dist/favicon/favicon.ico" type="image/x-icon">
+    <meta name="theme-color" content="#000091">
+    
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@2.0.0/dist/htmx.min.js"></script>
+    
+    <style>
+      /* Custom styles */
+      .htmx-indicator {opacity: 0; transition: opacity 200ms ease-in;}
+      .htmx-request .htmx-indicator {opacity: 1;}
+      .htmx-request.htmx-indicator {opacity: 1;}
+      .clear-button {
+        border: 1px solid;
+        border-radius: 4px;
+        padding: 0.5rem;
+        background: none;
+        cursor: pointer;
+      }
+      .clear-button.hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header role="banner" class="fr-header">
+      <div class="fr-header__body">
+        <div class="fr-container">
+          <div class="fr-header__body-row">
+            <div class="fr-header__brand fr-enlarge-link">
+              <div class="fr-header__brand-top">
+                <div class="fr-header__logo">
+                  <p class="fr-logo">
+                    République<br>Française
+                  </p>
+                </div>
+              </div>
+              <div class="fr-header__service">
+                <a href="{{home-link}}" title="Accueil - {{title}}">
+                  <p class="fr-header__service-title">{{title}}</p>
+                </a>
+                <p class="fr-header__service-tagline">{{tagline}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main content -->
+    <main role="main" class="fr-container fr-py-8w">
+      {% ifequal content-type "home" %}
+      <!-- Search component -->
+      <div class="fr-grid-row fr-grid-row--center">
+        <div class="fr-col-12 fr-col-md-8">
+          <form class="fr-search-bar fr-mb-8w" role="search">
+            <label class="fr-label" for="search-input">{{search-placeholder}}</label>
+            <input 
+              class="fr-input" 
+              placeholder="{{search-placeholder}}" 
+              type="search" 
+              id="search-input" 
+              name="q" 
+              value="{{search-query|safe}}"
+              hx-get="{{home-link}}"
+              hx-push-url="true"
+              hx-trigger="keyup changed delay:300ms, search"
+              hx-target="#topics-content"
+              hx-indicator=".htmx-indicator">
+            <button 
+              type="button"
+              class="clear-button{% if search-query|empty? %} hidden{% endif %}"
+              title="{{clear-search}}"
+              aria-label="{{clear-search}}"
+              hx-get="{{home-link}}"
+              hx-push-url="true"
+              hx-target="#topics-content"
+              onclick="document.getElementById('search-input').value=''">X</button>
+            <button class="fr-btn" type="submit">
+              Rechercher
+            </button>
+            <div class="htmx-indicator fr-mt-2w">
+              <small>{{searching}}</small>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- START-HTMX-CONTENT -->
+      <div id="topics-content" class="fr-grid-row fr-grid-row--center">
+        <div class="fr-col-12">
+          {% if search-query|not-empty %}
+          <!-- Search results -->
+          {% if topics|empty? %}
+          <div class="fr-alert fr-alert--info">
+            <h3 class="fr-alert__title">Information</h3>
+            <p>{{no-search-results}}</p>
+          </div>
+          {% else %}
+          <div class="fr-accordions-group">
+            {% for topic in topics %}
+            <section class="fr-accordion">
+              <h3 class="fr-accordion__title">
+                <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-topic-{{forloop.counter}}">
+                  {{topic.title}}
+                </button>
+              </h3>
+              <div class="fr-collapse" id="accordion-topic-{{forloop.counter}}">
+                <div class="fr-callout">
+                  <div class="fr-callout__text">
+                    {{topic.content|safe}}
+                  </div>
+                </div>
+              </div>
+            </section>
+            {% endfor %}
+          </div>
+          {% endif %}
+          {% else %}
+          {% if category|not-empty %}
+          <!-- Category results -->
+          <div class="fr-mt-2w fr-mb-4w">
+            <a href="{{home-link}}" class="fr-link fr-fi-arrow-left-line fr-link--icon-left">
+              {{back-to-home}}
+            </a>
+          </div>
+          <h1 class="fr-mb-4w">{{category}}</h1>
+          {% if topics|empty? %}
+          <div class="fr-alert fr-alert--info">
+            <h3 class="fr-alert__title">Information</h3>
+            <p>{{no-category-results}}</p>
+          </div>
+          {% else %}
+          <div class="fr-accordions-group">
+            {% for topic in topics %}
+            <section class="fr-accordion">
+              <h3 class="fr-accordion__title">
+                <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-topic-{{forloop.counter}}">
+                  {{topic.title}}
+                </button>
+              </h3>
+              <div class="fr-collapse" id="accordion-topic-{{forloop.counter}}">
+                <div class="fr-callout">
+                  <div class="fr-callout__text">
+                    {{topic.content|safe}}
+                  </div>
+                </div>
+              </div>
+            </section>
+            {% endfor %}
+          </div>
+          {% endif %}
+          {% else %}
+          <!-- Categories grid -->
+          <div class="fr-grid-row fr-grid-row--gutters">
+            {% for cat-item in categories-with-counts %}
+            <div class="fr-col-12 fr-col-md-4 fr-mb-4w">
+              <div class="fr-card fr-enlarge-link fr-card--shadow">
+                <div class="fr-card__body">
+                  <div class="fr-card__content">
+                    <h3 class="fr-card__title">
+                      <a href="{{home-link}}?category={{cat-item.name|url-encode}}"
+                         hx-get="{{home-link}}?category={{cat-item.name|url-encode}}"
+                         hx-push-url="true"
+                         hx-target="#topics-content"
+                         class="fr-card__link">
+                        {{cat-item.name}}
+                      </a>
+                    </h3>
+                    <p class="fr-card__desc">{{cat-item.count}} {{topics-count}}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+          {% endif %}
+        </div>
+      </div>
+      <!-- END-HTMX-CONTENT -->
+      {% endifequal %}
+
+      {% ifequal content-type "error" %}
+      <!-- Error pages -->
+      <div class="fr-grid-row fr-grid-row--center">
+        <div class="fr-col-12 fr-col-md-8">
+          <form class="fr-search-bar fr-mb-8w" role="search">
+            <label class="fr-label" for="search-input">{{search-placeholder}}</label>
+            <input 
+              class="fr-input" 
+              placeholder="{{search-placeholder}}" 
+              type="search" 
+              id="search-input" 
+              name="q" 
+              value=""
+              hx-get="{{home-link}}"
+              hx-push-url="true"
+              hx-trigger="keyup changed delay:300ms, search"
+              hx-target="#topics-content"
+              hx-indicator=".htmx-indicator">
+            <button class="fr-btn" type="submit">
+              Rechercher
+            </button>
+            <div class="htmx-indicator fr-mt-2w">
+              <small>{{searching}}</small>
+            </div>
+          </form>
+        </div>
+      </div>
+          
+      <div id="topics-content" class="fr-grid-row fr-grid-row--center">
+        <div class="fr-col-12 fr-col-md-8">
+          <h1>{% ifequal error-type "not-found" %}{{content-not-found-title}}{% else %}{{page-not-found-title}}{% endifequal %}</h1>
+          <div class="fr-alert fr-alert--error fr-mt-4w">
+            <h3 class="fr-alert__title">
+              {% ifequal error-type "not-found" %}{{article-not-found}}{% else %}{{page-not-found}}{% endifequal %}
+            </h3>
+            <p>{% ifequal error-type "not-found" %}{{check-url-search}}{% else %}{{check-url-home}}{% endifequal %}</p>
+          </div>
+        </div>
+      </div>
+      {% endifequal %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="fr-footer" role="contentinfo">
+      <div class="fr-container">
+        <div class="fr-footer__body">
+          <div class="fr-footer__brand fr-enlarge-link">
+            <p class="fr-logo">République<br>Française</p>
+          </div>
+          <div class="fr-footer__content">
+            <p class="fr-footer__content-desc">{{footer|safe}}</p>
+            <ul class="fr-footer__content-list">
+              <li class="fr-footer__content-item">
+                <a class="fr-footer__content-link" href="https://info.gouv.fr" target="_blank" rel="noopener">info.gouv.fr</a>
+              </li>
+              <li class="fr-footer__content-item">
+                <a class="fr-footer__content-link" href="https://service-public.fr" target="_blank" rel="noopener">service-public.fr</a>
+              </li>
+              <li class="fr-footer__content-item">
+                <a class="fr-footer__content-link" href="https://legifrance.gouv.fr" target="_blank" rel="noopener">legifrance.gouv.fr</a>
+              </li>
+              <li class="fr-footer__content-item">
+                <a class="fr-footer__content-link" href="https://data.gouv.fr" target="_blank" rel="noopener">data.gouv.fr</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="fr-footer__bottom">
+          <div class="fr-footer__bottom-copy">
+            <p><a target="new" href="{{source}}">{{content-source}}</a> · {{footer|safe}}</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- DSFR Scripts -->
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.11.1/dist/dsfr/dsfr.module.min.js"></script>
+    <script type="text/javascript" nomodule src="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.11.1/dist/dsfr/dsfr.nomodule.min.js"></script>
+  </body>
+</html>
