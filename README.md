@@ -5,7 +5,15 @@
 
 [code.gouv.fr/faq](https://code.gouv.fr/faq/) uses [topics](https://github.com/bzg/topics) to display its FAQ.
 
-The [src/ directory](src/) of this repository contains the HTML template file to deploy the `topics` web app using the [French design system](https://github.com/GouvernementFR/dsfr/) (aka DSFR).
+The [src/ directory](src/) of this repository contains a HTML template file to deploy the `topics` web app using the [French design system](https://github.com/GouvernementFR/dsfr/) (aka DSFR).
+
+![Topics DSFR screenshot](topics-dsfr.png)
+
+# Deploy
+
+See [these instructions](https://github.com/bzg/topics?tab=readme-ov-file#install-and-run) to install and run `topics`.
+
+    ~$ topics -I src/topics-dsfr.html
 
 # Contributing
 
